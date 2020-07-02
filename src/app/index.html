@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="testTenat">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>testTenat</title>
+</head>
+<body>
+	<div class="window" ng-controller="windowController">
+		<h3>Permission</h3>
+		<div class="table">
+
+			<div class="row">
+				<div class="title">Sections</div>
+				<label>
+					<input type="checkbox" ng-model="checkAll.view" ng-change="selectAll('view')">
+					Check all
+				</label>
+				<label>
+					<input type="checkbox" ng-model="checkAll.edit" ng-change="selectAll('edit')" ng-disabled="!checkAll.view">
+					Check all
+				</label>
+				<label>
+					<input type="checkbox" ng-model="checkAll.remove" ng-change="selectAll('remove')" ng-disabled="!checkAll.view">
+					Check all
+				</label>
+			</div>
+
+			<div class="row" ng-repeat="row in rows">
+				<div class="title">{{ row.section }}</div>
+				<label>
+					<input type="checkbox" ng-model="row.view" ng-change="checkIfAllSelected('view')">
+					View
+				</label>
+				<label>
+					<input type="checkbox" ng-model="row.edit" ng-disabled="!row.view" ng-change="checkIfAllSelected('edit')">
+					Edit
+				</label>
+				<label>
+					<input type="checkbox" ng-model="row.remove" ng-disabled="!row.view" ng-change="checkIfAllSelected('remove')">
+					Remove
+				</label>
+			</div>
+
+		</div>
+
+		<button type="button" ng-click="save()">Save</button>
+	</div>
+</body>
+</html>
