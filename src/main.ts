@@ -1,13 +1,29 @@
 import "./app/assets/styles/style.css";
 import * as angular from "angular";
-let app = angular.module("testTenat",[]);
+let app : angular.IModule = angular.module("testTenat",[]);
+
+interface IARow {
+	[index: number]: IRow;
+};
+
+interface IRow {
+	section: string;
+	view: boolean;
+	edit: boolean;
+	remove: boolean;
+};
+
+interface ITRow {
+	view: boolean;
+	edit: boolean;
+	remove: boolean;
+};
 
 app.controller("windowController", ["$scope", function($scope) {
 	if (localStorage.getItem("settings")) {
-		var elem = JSON.parse(localStorage.getItem("settings") || '{}');
-		$scope.rows = elem;
+		$scope.rows = JSON.parse(localStorage.getItem("settings") || '[]');
 	} else {
-		$scope.rows = [
+		let rows: IARow = [
 			{
 				section: "Calendar",
 				view: false,
@@ -30,16 +46,21 @@ app.controller("windowController", ["$scope", function($scope) {
 				remove: false
 			},
 		];
+		$scope.rows = rows;
 	}
-	let amount = $scope.rows.length;
-	$scope.checkAll = {
+	const amount : number = $scope.rows.length;
+	let iTRow: ITRow = {
 		view: false,
 		edit: false,
 		remove: false,
 	}
-	checkIfAllSelectedFunction("view");
-	checkIfAllSelectedFunction("edit");
-	checkIfAllSelectedFunction("remove");
+	$scope.checkAll = iTRow;
+
+	let emptyRow: IRow = {section: "", view: false, edit: false, remove: false}
+
+	checkIfAllSelectedFunction("view", emptyRow);
+	checkIfAllSelectedFunction("edit", emptyRow);
+	checkIfAllSelectedFunction("remove", emptyRow);
 
     $scope.selectAll = function(data: string) {
 		for (let i = 0; i < amount; i++) {
@@ -47,12 +68,12 @@ app.controller("windowController", ["$scope", function($scope) {
 		}
 	};
 
-	$scope.checkIfAllSelected = function(data: string) {
-		checkIfAllSelectedFunction(data);
+	$scope.checkIfAllSelected = function(data: string, row : IRow) {
+		checkIfAllSelectedFunction(data, row);
 	};
 
-	function checkIfAllSelectedFunction(data: string) {
-		let b = 0;
+	function checkIfAllSelectedFunction(data: string, row : IRow) {
+		let b : number = 0;
 		for (let i = 0; i < amount; i++) {
 			if ($scope.rows[i][data] == true) b++;
 		}
@@ -61,10 +82,17 @@ app.controller("windowController", ["$scope", function($scope) {
 		} else {
 			$scope.checkAll[data] = false;
 		}
+
+		if (row.section.length != 0 && !row.view) {
+			row.edit = false;
+			row.remove = false;
+			checkIfAllSelectedFunction("edit", emptyRow);
+			checkIfAllSelectedFunction("remove", emptyRow);
+		}
 	}
 
 	$scope.save = function() {
-		var forSaving = "[";
+		var forSaving : string = "[";
 		for (let i = 0; i < amount; i++) {
 			forSaving += JSON.stringify({
 				section: $scope.rows[i].section,

@@ -29,7 +29,7 @@
 			<div class="row" ng-repeat="row in rows">
 				<div class="title">{{ row.section }}</div>
 				<label>
-					<input type="checkbox" ng-model="row.view" ng-change="checkIfAllSelected('view')">
+					<input type="checkbox" ng-model="row.view" ng-change="checkIfAllSelected('view', row)">
 					View
 				</label>
 				<label>
